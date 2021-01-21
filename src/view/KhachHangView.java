@@ -124,6 +124,7 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 		
 		tableResult= new JScrollPane(tb);
 		pnKH_2.add(tableResult);
+		
 //		
 	}
 	public void reload() {
@@ -241,7 +242,7 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 				tfNgDK.setText(findResultSet.getString(i));
 			}
 			if(check==1)
-				JOptionPane.showMessageDialog(null, "Không có dữ liệu");
+				JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
 			statement.close();
 			findResultSet.close();
 			
@@ -293,6 +294,8 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		selectedRow= tb.getSelectedRow();
+//		Vector vRowSelected
+		
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
