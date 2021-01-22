@@ -25,7 +25,7 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 	
 	JLabel lbMaKH,lbTenkH, lbNumPhone, lbCMND, lbAddress, lbNgDK;
 	JTextField tfMaKH, tfTenKH, tfNumPhone, tfCMND, tfAddress, tfNgDK;
-	JButton btInsert, btUpdate, btDelete, btFind,btView;
+	JButton btInsert, btUpdate, btDelete, btGetInfor,btView;
 	Vector vData=  new Vector();
 	Vector vTitle= new Vector();
 	
@@ -92,15 +92,16 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 		pnKH_1_2.add(btUpdate);
 		btDelete= new JButton("Delete");
 		pnKH_1_2.add(btDelete);
-		btFind= new JButton("Find");
-		pnKH_1_2.add(btFind);
+		btGetInfor= new JButton("Get Infor");
+		pnKH_1_2.add(btGetInfor);
+		JButton btSearch= new JButton("Search");
+		pnKH_1_2.add(btSearch);
 
-		
 		btInsert.addActionListener(this);
 		btDelete.addActionListener(this);
-		btFind.addActionListener(this);
+		btGetInfor.addActionListener(this);
 		btUpdate.addActionListener(this);
-		
+		btSearch.addActionListener(this);
 		
 		pnKh_1.add(pnKH_1_1,BorderLayout.NORTH);
 		pnKh_1.add(pnKH_1_2);
@@ -216,7 +217,7 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 		}
 	}
 	
-	public void find() {
+	public void GetInfor() {
 		try {
 			String maKH;
 			maKH= tfMaKH.getText();
@@ -252,6 +253,34 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 		}
 		
 	}
+	public void search() {
+		try {
+			String maKH;
+			maKH= tfMaKH.getText();
+			int check=0;
+			Statement statement = connection.createStatement();
+			String sql= "Select * from Khachhang where diachi= '"+maKH+"'";		
+			ResultSet findResultSet = statement.executeQuery(sql);
+			ResultSetMetaData resultSetMetaData= findResultSet.getMetaData();
+			int column= resultSetMetaData.getColumnCount();
+			vData.clear();
+			while(findResultSet.next()) {
+				check=1;
+				Vector rowVector= new Vector(column);
+				for(int i=1; i<= column; i++) {
+					rowVector.add(findResultSet.getString(i));					
+				}
+				vData.add(rowVector);
+				model.fireTableDataChanged();
+			}
+			if(check== 0) {
+				JOptionPane.showMessageDialog(null,"Không tìm thấy kết quả");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+	}
 	public void update() {
 		String maKH, tenKH ,CMND, DiaChi, sdt, ngaySinh;
 		maKH= tfMaKH.getText();
@@ -281,13 +310,16 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 		else if(e.getActionCommand().equals("Insert")) {
 			Insert();
 		}
-		else if(e.getActionCommand().equals("Find")) {
-			find();
+		else if(e.getActionCommand().equals("Get Infor")) {
+			GetInfor();
 		}
 		else if(e.getActionCommand().equals("Update")) {
 			update();
 			this.dispose();
 			new KhachHangView();
+		}
+		else if(e.getActionCommand().equals("Search")) {
+			search();
 		}
 	}
 	@Override

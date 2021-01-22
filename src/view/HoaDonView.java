@@ -174,8 +174,9 @@ public class HoaDonView extends JFrame implements ActionListener{
 					tfDonGia.setText(donGia+" VND (Kinh doanh)");
 				}
 				i++;
-//				System.out.println(resultSet.getString(i));
+				
 				if(resultSet.getString(i).equals("0")) {
+					
 					lbStatus.setText("Chưa thanh toán");
 					btInHD.setEnabled(true);
 					status=0;
@@ -185,8 +186,10 @@ public class HoaDonView extends JFrame implements ActionListener{
 					status=1;
 					btInHD.setEnabled(false);
 				}
+				break;
 				
 			}
+			
 			if(check==1) {
 				
 				firstNum=Integer.parseInt(tfFirstIndex.getText());
@@ -205,7 +208,7 @@ public class HoaDonView extends JFrame implements ActionListener{
 				
 				//insert luong dien , tong tien vao csdl, 
 				Statement statement= connection.createStatement();
-				sql="update hoadon set luongdien= "+finalNum+",tongtien= "+ total+" where mahd='"+maHD+"' and makh='"+maKH+"'";
+				sql="update hoadon set luongdien= "+finalNum+",tongtien= "+ total+" where mahd='"+maHD+"' and ngaythang='"+month+"'";
 				statement.executeUpdate(sql);
 			}
 			else {
@@ -231,6 +234,25 @@ public class HoaDonView extends JFrame implements ActionListener{
 		}
 		
 	}
+//	public void find() {
+//		String makh, tenkh,ngaythang, loaidien, status, firstIndex, lastIndexString;
+//		String proc_1= "{call pr_HD(?,?)}";
+//		makh= tfMaKH.getText();
+//		ngaythang= tfMonth.getText();
+//		try {
+//			CallableStatement cs_1= connection.prepareCall(proc_1);
+//			cs_1.setString(1, makh);
+//			cs_1.setString(1, ngaythang);
+//			ResultSet resultSet= cs_1.executeQuery(proc_1);
+//			while(resultSet.next()) {
+//				tfMaHD.setText(resultSet.getString(i));
+//			}
+//			
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 //	
 	@Override
 	public void actionPerformed(ActionEvent e) {

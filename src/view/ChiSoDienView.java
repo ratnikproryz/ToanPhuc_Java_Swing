@@ -84,9 +84,12 @@ public class ChiSoDienView extends JFrame implements ActionListener, MouseListen
 		pnCS_2.add(btInsert);
 		JButton btUpdate= new JButton("Update");
 		pnCS_2.add(btUpdate);
+		JButton btGetinfor= new JButton("Get infor");
+		pnCS_2.add(btGetinfor);
 		
 		btInsert.addActionListener(this);
 		btUpdate.addActionListener(this);
+		btGetinfor.addActionListener(this);
 		
 		pnCS.add(pnCS_1);
 		pnCS.add(pnCS_2);
@@ -127,12 +130,13 @@ public class ChiSoDienView extends JFrame implements ActionListener, MouseListen
 			
 			String sql_1= "insert into chiso values('"+maCS+"','"+month+"',"+firstIndex+","+lastIndex+
 														",'"+maKH+"')";
+			
 			int check=0;
 			if(statement.executeUpdate(sql_1)== 0) {
 				JOptionPane.showMessageDialog(null, "Insert into ChiSo failed");
 				check=1;
 			}
-			String sql_2="insert into hoadon(mahd, makh, loaidien,status) values('"+maHD+"','"+maKH+"',"+type+",0)";
+			String sql_2="insert into hoadon(mahd, makh, loaidien,status,ngaythang) values('"+maHD+"','"+maKH+"',"+type+",0, '"+month+"')";
 	
 			if(statement.executeUpdate(sql_2)==0) {
 				JOptionPane.showMessageDialog(null, "Insert into Hoadon failed");
@@ -183,23 +187,36 @@ public class ChiSoDienView extends JFrame implements ActionListener, MouseListen
 			// TODO: handle exception
 		}
 	}
-	public void update() {
+	public void getInfor() {
+		selectedrow= tbJTable.getSelectedRow();
+		Vector csoVector= (Vector)vData.elementAt(selectedrow);
+		tfMaCS.setText(csoVector.elementAt(0)+"");
+		tfMonth.setText(csoVector.elementAt(1)+"");
+		tfFirstIndex.setText(csoVector.elementAt(2)+"");
+		tfLastIndex.setText(csoVector.elementAt(3)+"");
+		tfMaKH.setText(csoVector.elementAt(4)+"");
 		
+	}
+	public void update() {
+		String makh, macs ,month, firstIndex, lastIndex;
 		try {
-			// sua lai chuc nang update
-			Vector csoVector= (Vector)vData.elementAt(selectedrow);
-			System.out.println(csoVector.elementAt(3));
-			String sql="update chiso set cs_dau='"+ csoVector.elementAt(2)+"',cs_cuoi='"+csoVector.elementAt(3)+"' where macs='"+csoVector.elementAt(0)
-																		+"'and makh='"+csoVector.elementAt(4)+"'";
+			makh= tfMaKH.getText();
+			macs= tfMaCS.getText();
+			month=tfMonth.getText();
+			firstIndex= tfFirstIndex.getText();
+			lastIndex= tfLastIndex.getText();
 			Statement statement= connection.createStatement();
+			String sql ="update chiso set ngaythang='"+month+"',cs_dau="+firstIndex+", cs_cuoi="+ lastIndex+"where macs='"+macs+"' and makh='"+makh+"'";
 			if(statement.executeUpdate(sql)!=0) {
-				JOptionPane.showMessageDialog(null, "Cập nhật thành công");
-//				pnTable.def
+				JOptionPane.showMessageDialog(null, "Update thành công");
 			}
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
+
+		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -209,6 +226,11 @@ public class ChiSoDienView extends JFrame implements ActionListener, MouseListen
 		}
 		else if(e.getActionCommand().equals("Update")) {
 			update();
+			this.dispose();
+			new ChiSoDienView();
+		}
+		else if(e.getActionCommand().equals("Get infor")) {
+			getInfor();
 		}
 	}
 	@Override
