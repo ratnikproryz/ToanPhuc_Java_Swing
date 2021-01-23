@@ -1,6 +1,7 @@
 package view;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -14,6 +15,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultEditorKit.InsertBreakAction;
+import javax.swing.text.html.CSS;
 
 import controller.DAO;
 
@@ -253,33 +255,49 @@ public class KhachHangView extends JFrame implements ActionListener, MouseListen
 		}
 		
 	}
+
 	public void search() {
+		int check=0;
 		try {
-			String maKH;
-			maKH= tfMaKH.getText();
-			int check=0;
-			Statement statement = connection.createStatement();
-			String sql= "Select * from Khachhang where diachi= '"+maKH+"'";		
-			ResultSet findResultSet = statement.executeQuery(sql);
-			ResultSetMetaData resultSetMetaData= findResultSet.getMetaData();
+			String makh, tenkh,diachi,ngaysinh;
+			makh= tfMaKH.getText();
+			tenkh= tfTenKH.getText();
+			diachi= tfAddress.getText();
+			ngaysinh= tfNgDK.getText();
+			
+			String sql= "{Call findKH(?,?,?,?)}";
+			CallableStatement cStatement=  connection.prepareCall(sql);
+			if(makh.equals("")) makh=null;
+			if(tenkh.equals("")) tenkh= null;
+			if(diachi.equals("")) diachi= null;
+			if(ngaysinh.equals(null)) ngaysinh=null;
+			cStatement.setString(1, makh);
+			cStatement.setString(2, tenkh);
+			cStatement.setString(3, diachi);
+			cStatement.setString(4, ngaysinh);
+			
+			ResultSet resultSet= cStatement.executeQuery();
+			ResultSetMetaData resultSetMetaData= resultSet.getMetaData();
+			
 			int column= resultSetMetaData.getColumnCount();
 			vData.clear();
-			while(findResultSet.next()) {
+			while(resultSet.next()) {
 				check=1;
-				Vector rowVector= new Vector(column);
+				Vector row= new Vector(column);
 				for(int i=1; i<= column; i++) {
-					rowVector.add(findResultSet.getString(i));					
+					row.add(resultSet.getString(i));
 				}
-				vData.add(rowVector);
+				vData.add(row);
 				model.fireTableDataChanged();
 			}
-			if(check== 0) {
-				JOptionPane.showMessageDialog(null,"Không tìm thấy kết quả");
+			if (check==0) {
+				JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			JOptionPane.showMessageDialog(null, e.getMessage());
+			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
+		
 	}
 	public void update() {
 		String maKH, tenKH ,CMND, DiaChi, sdt, ngaySinh;

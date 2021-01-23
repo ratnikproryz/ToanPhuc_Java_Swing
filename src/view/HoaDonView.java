@@ -234,26 +234,7 @@ public class HoaDonView extends JFrame implements ActionListener{
 		}
 		
 	}
-//	public void find() {
-//		String makh, tenkh,ngaythang, loaidien, status, firstIndex, lastIndexString;
-//		String proc_1= "{call pr_HD(?,?)}";
-//		makh= tfMaKH.getText();
-//		ngaythang= tfMonth.getText();
-//		try {
-//			CallableStatement cs_1= connection.prepareCall(proc_1);
-//			cs_1.setString(1, makh);
-//			cs_1.setString(1, ngaythang);
-//			ResultSet resultSet= cs_1.executeQuery(proc_1);
-//			while(resultSet.next()) {
-//				tfMaHD.setText(resultSet.getString(i));
-//			}
-//			
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-//	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
