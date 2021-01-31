@@ -1,8 +1,11 @@
 package view;
+import javax.naming.directory.SearchControls;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
 import controller.DAO;
 
@@ -86,10 +89,13 @@ public class ChiSoDienView extends JFrame implements ActionListener, MouseListen
 		pnCS_2.add(btUpdate);
 		JButton btGetinfor= new JButton("Get infor");
 		pnCS_2.add(btGetinfor);
+		JButton btSearch = new JButton("Search");
+		pnCS_2.add(btSearch);
 		
 		btInsert.addActionListener(this);
 		btUpdate.addActionListener(this);
 		btGetinfor.addActionListener(this);
+		btSearch.addActionListener(this);
 		
 		pnCS.add(pnCS_1);
 		pnCS.add(pnCS_2);
@@ -218,6 +224,43 @@ public class ChiSoDienView extends JFrame implements ActionListener, MouseListen
 
 		
 	}
+	public void Search() {
+		String sql= "{call proc_Search_CS(?,?)}";
+		String maKH, month;
+		maKH=tfMaKH.getText();
+		month= tfMonth.getText();
+		int check=0;
+		try {
+			CallableStatement cs = connection.prepareCall(sql);
+			if(maKH.equals(""))
+				maKH= null;
+			if(month.equals(""))
+					month= null;
+			cs.setString(1, maKH);
+			cs.setString(2, month);
+			
+			ResultSet resultSet= cs.executeQuery();
+			ResultSetMetaData resultSetMetaData= resultSet.getMetaData();
+			int column= resultSetMetaData.getColumnCount();
+			vData.clear();
+			while(resultSet.next()) {
+				check=1;
+				Vector row= new Vector(column);
+				for(int i=1; i<= column; i++) {
+					row.add(resultSet.getString(i));
+				}
+				vData.add(row);
+				defaultTableModel.fireTableDataChanged();
+			}
+			if(check==0) {
+				JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+		
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -231,6 +274,9 @@ public class ChiSoDienView extends JFrame implements ActionListener, MouseListen
 		}
 		else if(e.getActionCommand().equals("Get infor")) {
 			getInfor();
+		}
+		else if (e.getActionCommand().equals("Search")) {
+			Search();
 		}
 	}
 	@Override
